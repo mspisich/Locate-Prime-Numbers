@@ -1,22 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab16
 {
     class Program
     {
+        //Store prime numbers found thus far. Initialize with primes up to 199.
+        public static List<int> primeNumbers = new List<int>(new int[]{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199});
+
         static void Main(string[] args)
         {
             Console.WriteLine("Let's locate some primes!");
-            Console.WriteLine("/nThis application will find you any prime, in order, from first prime number on.");
+            Console.WriteLine("\nThis application will find you any prime, in order, from first prime number on.");
 
             bool run = true;
             while (run)
             {
-                Console.WriteLine("\nWhich prime number are you looking for?");
+                Console.WriteLine("\nWhich prime number are you looking for? (Huge numbers may take a while!)");
 
                 int input = -1;
                 bool isValid = false;
@@ -57,15 +57,32 @@ namespace Lab16
         public static int FindPrimeAt(int userInput)
         {
             int primeNum = -1;
-            int primesSoFar = 0;
             
-            for (int i = 0; primesSoFar < userInput; i++)
+            //If prime numbers have been found before up to user input, use primeNumbers list. Otherwise, brute-force it.
+            if (primeNumbers.Count >= userInput)
             {
-                bool isPrime = CheckIfPrime(i);
-                if(isPrime == true)
+                return primeNumbers[userInput - 1];
+            }
+            else
+            {
+                int primesSoFar = primeNumbers.Count;
+                int priorPrimesTotal = primesSoFar;
+
+                //Finding primes that aren't already in primeNumbers list. Start for loop at last index of list.
+                //Add new prime numbers to list as they are found (except for initial 'i' value, since that's already in list!).
+                for (int i = primeNumbers[primeNumbers.Count - 1]; primesSoFar <= userInput; i++)
                 {
-                    primeNum = i;
-                    primesSoFar++;
+                    bool isPrime = CheckIfPrime(i);
+                    if (isPrime == true && primesSoFar != priorPrimesTotal)
+                    {
+                        primeNumbers.Add(i);
+                    }
+
+                    if (isPrime == true)
+                    {
+                        primeNum = i;
+                        primesSoFar++;
+                    }
                 }
             }
 
@@ -118,6 +135,7 @@ namespace Lab16
 
             if (input.Equals("n"))
             {
+                Console.WriteLine("Goodbye.");
                 run = false;
             }
             else if (input.Equals("y"))
